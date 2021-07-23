@@ -4,6 +4,21 @@ var {product,user,shop,materialtype,color,category,subcategory}= require('../seq
 const multer = require('multer');
 
 
+// get length;
+router.get('/getlength', function(req, res, next) {
+
+    product.findAll({
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    }).then(arks => {
+        res.json(
+            {arks,
+             length: arks.length});
+  
+    });
+  });
 router.get('/all/:id', function(req, res, next) {
 
   product.findAll({

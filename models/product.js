@@ -12,6 +12,7 @@ module.exports = (sequelize, type) => {
         size: type.STRING,
         image: type.STRING,
         productCode: type.STRING,
+        isfeature:type.BOOLEAN,
         status: type.BOOLEAN
     })
 }

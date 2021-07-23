@@ -4,6 +4,22 @@ var {shop,stype,sociallink,user,company}= require('../sequelize');
 const multer = require('multer');
 
 
+// get length;
+router.get('/getlength', function(req, res, next) {
+
+    shop.findAll({
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    }).then(arks => {
+        res.json(
+            {arks,
+             length: arks.length});
+  
+    });
+  });
+
 router.get('/all/:id', function(req, res, next) {
 
   shop.findAll({

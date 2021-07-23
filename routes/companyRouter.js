@@ -15,7 +15,7 @@ router.get('/all', function(req, res, next) {
   }).then(arks => {
       res.json(
           {arks,
-        length: arks.length});
+           length: arks.length});
 
   });
 });
@@ -31,7 +31,7 @@ router.post('/update/:id', function(req, res, next) {
     desc: data.desc,
     experience_years: data.expyears,
     compTypeId: data.type,
-    userId: data.userId,
+    userId: 2,
     image: data.images
   }, { where: { id: req.params.id } }).then(resp => {
       res.json({ resp, message: 'updated' });
@@ -40,6 +40,7 @@ router.post('/update/:id', function(req, res, next) {
 
 router.post('/create', function(req, res, next) {
   const data = req.body;
+  console.log(data);
   company.create({
       title: data.name,
       email: data.email,
@@ -47,11 +48,10 @@ router.post('/create', function(req, res, next) {
       desc: data.desc,
       experience_years: data.expyears,
       compTypeId: data.type,
-      userId: data.userId,
+      userId: 2,
       image: data.images
   }).then(resp => {
       res.json({ message: "new company added" });
-
   });
 });
 

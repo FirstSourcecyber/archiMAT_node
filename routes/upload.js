@@ -16,4 +16,4 @@ router.post('/image',   function(req, res, next) {
      res.json({
        message: 'success' 
      })
-    });
+});
