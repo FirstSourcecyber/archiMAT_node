@@ -15,6 +15,7 @@ const ColorModel = require('./models/color');
 const ImagesModel = require('./models/images');
 const MaterialTypeModel = require('./models/material_type');
 const CompanytypeModel = require('./models/company_type');
+const shopTimeModel = require('./models/shoptiming');
 
 const sequelize = new Sequelize('archimat', 'root', '', {
     host: 'localhost',
@@ -41,6 +42,7 @@ const color = ColorModel(sequelize, Sequelize);
 const images = ImagesModel(sequelize, Sequelize);
 const materialtype = MaterialTypeModel(sequelize, Sequelize);
 const comp_type = CompanytypeModel(sequelize, Sequelize);
+const shoptime = shopTimeModel(sequelize, Sequelize);
 
 
 // admin and user
@@ -95,6 +97,9 @@ shop.belongsTo(stype);
 shop.belongsTo(user);
 user.hasMany(shop, {foreignKey: 'userId', sourceKey: 'id'});
 
+shoptime.belongsTo(shop);
+shop.hasMany(shoptime, {foreignKey: 'shopId', sourceKey: 'id'});
+
 shop.belongsTo(company);
 company.hasMany(shop, {foreignKey: 'companyId', sourceKey: 'id'});
 // //shop and social link
@@ -126,5 +131,6 @@ module.exports = {
     color,
     materialtype,
     images,
-    comp_type
+    comp_type,
+    shoptime
 };
