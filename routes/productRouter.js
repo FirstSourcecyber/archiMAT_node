@@ -19,6 +19,23 @@ router.get('/getlength', function(req, res, next) {
   
     });
   });
+
+  // get length;
+router.get('/all', function(req, res, next) {
+
+  product.findAll({
+    include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
+      order: [
+          ['id', 'DESC']
+      ],
+      // limit: 5,
+  }).then(arks => {
+      res.json(
+          {arks,
+           length: arks.length});
+
+  });
+});
 router.get('/all/:id', function(req, res, next) {
 
   product.findAll({
