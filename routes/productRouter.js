@@ -67,7 +67,7 @@ router.post('/update/:id', function(req, res, next) {
     shopId: data.shopId,
     colorId: data.color_id,
     materialTypeId: data.mat_typeId,
-    userId: 1,
+    userId: 2,
     categoryId: data.cat_id,
     subcategoryId: data.subCat_id,
     status: true,
