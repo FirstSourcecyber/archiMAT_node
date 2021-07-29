@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var {shop,stype,product,user,company,materialtype,color,category,subcategory}= require('../sequelize');
+var {shop,stype,product,user,company,shoptime,materialtype,color,category,subcategory}= require('../sequelize');
+// var {shop,stype,sociallink,user,company,shoptime}= require('../sequelize');
 const multer = require('multer');
 
 
@@ -114,16 +115,18 @@ router.post('/create', function(req, res, next) {
       twitter: data.twitter,
       companyId: data.compId,
       status: true,
-  }).then(resp => {
-    //   for(var i = 0; i< data.array.length; i++){
+  }).then( async resp=> {
+      for(var i = 0; i< data.hour_timing.length; i++){
 
-    //       sociallink.create({
-    //           link: data.array[i]['socialLink'],
-    //           shopId: resp.id
-    //       }).then(data =>{
-    //           console.log('social Links adds');
-    //       })
-    //   }
+      await  shoptime.create({
+              day: data.hour_timing[i]['day'],
+              opentime: data.hour_timing[i]['open'],
+              closetime: data.hour_timing[i]['close'],
+              shopId: resp.id
+          }).then(data =>{
+              console.log('shop timing added');
+          })
+      }
       res.json({ message: "new shop added" });
 
   });

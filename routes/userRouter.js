@@ -153,21 +153,27 @@ router.post("/forgot", (req, res, next) => {
   }).then(isAccountExist => {
 
       var password = generator.generate({
-          length: 4,
-          numbers: true
+            length: 4,
+            numbers: true,
+            symbols: false,
+            lowercase:false,
+            uppercase:false
       })
       pa = password;
       if (isAccountExist) {
           res.json({
-              message: 'Email exsists',
+              message: 'Email exists',
               pa,
               isAccountExist: isAccountExist
           });
           var transporter = nodemailer.createTransport({
-              service: 'gmail',
+            //   service: 'gmail',
+            //   host: 'local',
+              port: 587,
+            //   secure: false, 
               auth: {
-                  user: 'imsalman5873@gmail.com',
-                  pass: 'mirza.saad'
+                  user: 'imsaadi302@gmail.com',
+                  pass: 'mirza.saad786'
               }
           });
 
