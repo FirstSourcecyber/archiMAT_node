@@ -16,6 +16,8 @@ const ImagesModel = require('./models/images');
 const MaterialTypeModel = require('./models/material_type');
 const CompanytypeModel = require('./models/company_type');
 const shopTimeModel = require('./models/shoptiming');
+const serviceModel = require('./models/service');
+const sliderModel = require('./models/homeslider');
 
 const sequelize = new Sequelize('archimat', 'root', '', {
     host: 'localhost',
@@ -28,6 +30,17 @@ const sequelize = new Sequelize('archimat', 'root', '', {
         idle: 10000
     }
 });
+// const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+   
+//     pool: {
+//         max: 10,
+//         min: 0,
+//         acquire: 30000,
+//         idle: 10000
+//     }
+// });
 
 // const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
 //   host: 'localhost',
@@ -60,6 +73,8 @@ const images = ImagesModel(sequelize, Sequelize);
 const materialtype = MaterialTypeModel(sequelize, Sequelize);
 const comp_type = CompanytypeModel(sequelize, Sequelize);
 const shoptime = shopTimeModel(sequelize, Sequelize);
+const service = serviceModel(sequelize, Sequelize);
+const slider = sliderModel(sequelize, Sequelize);
 
 
 // admin and user
@@ -78,6 +93,11 @@ category.hasMany(subcategory, {foreignKey: 'categoryId', sourceKey: 'id'});
 product.belongsTo(shop);
 shop.hasMany(product, {foreignKey: 'shopId', sourceKey: 'id'});
 
+service.belongsTo(shop);
+shop.hasMany(service, {foreignKey: 'shopId', sourceKey: 'id'});
+
+slider.belongsTo(shop);
+shop.hasMany(slider, {foreignKey: 'shopId', sourceKey: 'id'});
 //product and color
 product.belongsTo(color);
 color.hasMany(product, {foreignKey: 'colorId', sourceKey: 'id'});
@@ -136,7 +156,7 @@ try {
 //     }); 
 
 module.exports = {
-    category,
+    category,   
     subcategory,
     user,
     role,
@@ -149,5 +169,7 @@ module.exports = {
     materialtype,
     images,
     comp_type,
-    shoptime
+    shoptime,
+    service,
+    slider
 };

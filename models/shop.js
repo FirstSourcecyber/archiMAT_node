@@ -15,7 +15,6 @@ module.exports = (sequelize, type) => {
         website: type.STRING,
         fb: type.STRING,
         twitter: type.STRING,
-        opening_hours: type.STRING,
         image: type.STRING,
         virtual_mall:type.STRING,
         virtual_showroom:type.STRING,
