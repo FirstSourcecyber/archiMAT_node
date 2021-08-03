@@ -145,6 +145,7 @@ router.post('/updateprofile', function(req, res, next) {
 
 router.post("/forgot", (req, res, next) => {
   var reqData = req.body;
+  console.log(reqData);
   var pa;
   user.findOne({
       where: {
@@ -167,10 +168,9 @@ router.post("/forgot", (req, res, next) => {
               isAccountExist: isAccountExist
           });
           var transporter = nodemailer.createTransport({
-            //   service: 'gmail',
-            //   host: 'local',
-              port: 587,
-            //   secure: false, 
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
               auth: {
                   user: 'imsaadi302@gmail.com',
                   pass: 'mirza.saad786'
@@ -178,8 +178,8 @@ router.post("/forgot", (req, res, next) => {
           });
 
           var mailOptions = {
-              from: '"ArchiMAT" <Noreply@gmail.com>',
-              to: req.body.email,
+              from: 'imsaadi302@gmail.com',
+              to: reqData.email,
               subject: 'Do you want to change you password?',
               html: "<h2>Hello,</h2><br><p>It look like you request a new password<br>If that sounds right, Here is your code:<br></p>" + pa,
               // text: 'It look like you request a new password\n' + 'If that sounds right, Here is your code' + pa,

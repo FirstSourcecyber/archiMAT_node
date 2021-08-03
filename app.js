@@ -16,6 +16,8 @@ var roleRouter = require('./routes/roleRouter');
 var companyTypeRouter = require('./routes/companytypeRouter');
 var colorRouter = require('./routes/colorRouter');
 var materialRouter = require('./routes/materialRouter');
+var fileRouter = require('./routes/file');
+var serviceRouter = require('./routes/serviceRouter');
 
 
 var app = express();
@@ -53,6 +55,8 @@ app.use('/role', roleRouter);
 app.use('/companytype', companyTypeRouter);
 app.use('/color', colorRouter);
 app.use('/material', materialRouter);
+app.use('/file', fileRouter);
+app.use('/service', serviceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

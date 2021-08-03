@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {product,user,shop,materialtype,color,category,subcategory}= require('../sequelize');
+var {product,user,shop,materialtype,color,category,subcategory,images,slider}= require('../sequelize');
 const multer = require('multer');
 
 
@@ -24,7 +24,7 @@ router.get('/getlength', function(req, res, next) {
 router.get('/all', function(req, res, next) {
 
   product.findAll({
-    include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
+    include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory},{model:images}],
       order: [
           ['id', 'DESC']
       ],
@@ -40,7 +40,7 @@ router.get('/all/:id', function(req, res, next) {
 
   product.findAll({
       where:{shopId:req.params.id},
-      include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
+      include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory},{model:images}],
       order: [
           ['id', 'DESC']
       ],
@@ -56,6 +56,7 @@ router.get('/all/:id', function(req, res, next) {
 
 router.post('/update/:id', function(req, res, next) {
   const data = req.body;
+  console.log(data);
   console.log(req.params.id,)
   product.update({
     name: data.name,
@@ -67,13 +68,33 @@ router.post('/update/:id', function(req, res, next) {
     shopId: data.shopId,
     colorId: data.color_id,
     materialTypeId: data.mat_typeId,
-    userId: 1,
+    userId: 2,
     categoryId: data.cat_id,
     subcategoryId: data.subCat_id,
     status: true,
-    image: data.images
+    // image: data.images
   }, { where: { id: req.params.id } }).then(resp => {
-      res.json({ resp, message: 'updated' });
+
+    for(var i = 0; i< data.images.length; i++){
+        // if(data.images[i]['id'] == -1){
+
+            images.create({
+                image: data.images[i]['filename'],
+                productId: req.params.id
+              }).then(data =>{
+                  console.log('added images');
+              })
+        //     }else{
+        //         images.update({          
+        //             image: data.images[i]['filename'],
+        //             productId: req.params.id
+        //           },{where:{id: data.images[i]['id'],}}).then(data =>{
+        //               console.log('added images');
+        //           })
+        // }
+      }
+      res.json({ message: "updated" });
+
   });
 });
 
@@ -90,21 +111,21 @@ router.post('/create', function(req, res, next) {
       shopId: data.shopId,
       colorId: data.color_id,
       materialTypeId: data.mat_typeId,
-      userId: 1,
+      userId: 2,
       categoryId: data.cat_id,
       subcategoryId: data.subCat_id,
       status: true,
-      image: data.images
+    //   image: data.images
   }).then(resp => {
-    //   for(var i = 0; i< data.array.length; i++){
+      for(var i = 0; i< data.images.length; i++){
 
-    //       sociallink.create({
-    //           link: data.array[i]['socialLink'],
-    //           productId: resp.id
-    //       }).then(data =>{
-    //           console.log('social Links adds');
-    //       })
-    //   }
+        images.create({
+            image: data.images[i]['filename'],
+            productId: resp['id']
+          }).then(data =>{
+              console.log('added images');
+          })
+      }
       res.json({ message: "new product added" });
 
   });
@@ -117,6 +138,12 @@ router.get('/delete/:id', function(req, res, next) {
   });
 });
 
+// router.get('/Imagedelete/:id', function(req, res, next) {
+//     images.destroy({ where: { id: req.params.id } }).then(resp => {
+//         res.json({message: "deleted"});
+//     });
+//   });
+
 router.post("/uploader", function(req, res) {
     // console.log(req.file.filename)
   upload(req, res, function(err) {
@@ -124,7 +151,58 @@ router.post("/uploader", function(req, res) {
       res.json(images)
           // Everything went fine.
   })
-})
+});
+
+// sliders api
+
+router.get('/getsliders', function(req, res, next) {
+
+    slider.findAll({
+        where:{type: 'home',},
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    }).then(arks => {
+        res.json(
+            {arks,
+             length: arks.length});
+  
+    });
+  });
+
+  router.post('/createslider', function(req, res, next) {
+    const data = req.body;
+    console.log(data);
+    slider.create({
+        title: data.name,
+        image:data.images,
+        type: 'home',
+      //   image: data.images
+    }).then(resp => {
+        res.json({ message: "created" });
+    });
+  });
+
+  router.post('/updateslider/:id', function(req, res, next) {
+    const data = req.body;
+    console.log(data);
+    console.log(req.params.id,)
+    slider.update({
+      title: data.name,
+      image: data.images,
+      type: 'home',
+    }, { where: { id: req.params.id } }).then(resp => {
+        res.json({ message: "updated" });
+  
+    });
+  });
+  router.get('/deleteslider/:id', function(req, res, next) {
+    slider.destroy({ where: { id: req.params.id } }).then(resp => {
+        res.json("# " + req.params.id + " deleted");
+    });
+  });
+  
 
 
 module.exports = router;
