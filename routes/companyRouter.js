@@ -7,7 +7,7 @@ router.get('/all', function(req, res, next) {
 
   company.findAll({
      
-      include: [user,comp_type],
+      include: [comp_type],
       order: [
           ['id', 'DESC']
       ],
@@ -31,7 +31,7 @@ router.post('/update/:id', function(req, res, next) {
     desc: data.desc,
     experience_years: data.expyears,
     compTypeId: data.type,
-    userId: 2,
+    // userId: 2,
     image: data.images
   }, { where: { id: req.params.id } }).then(resp => {
       res.json({ resp, message: 'updated' });
@@ -48,7 +48,7 @@ router.post('/create', function(req, res, next) {
       desc: data.desc,
       experience_years: data.expyears,
       compTypeId: data.type,
-      userId: 2,
+    //   userId: 2,
       image: data.images
   }).then(resp => {
       res.json({ message: "new company added" });
