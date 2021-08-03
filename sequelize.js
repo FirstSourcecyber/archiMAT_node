@@ -29,6 +29,23 @@ const sequelize = new Sequelize('archimat', 'root', '', {
     }
 });
 
+// const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
+//   host: 'localhost',
+//   dialect: 'mysql',
+//   // dialectOptions: {
+//   //     charset: "utf8mb4",
+//   //     // collate: "utf8mb4_unicode_ci",
+//   //     supportBigNumbers: true,
+//   //     bigNumberStrings: true
+//   // },
+//   pool: {
+//       max: 10,
+//       min: 0,
+//       acquire: 30000,
+//       idle: 10000
+//   }
+// });
+
 const category = CategoryModel(sequelize, Sequelize);
 const subcategory = SubCategoryModel(sequelize, Sequelize);
 const role = RoleModel(sequelize, Sequelize);

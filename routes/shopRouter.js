@@ -5,6 +5,49 @@ var {shop,stype,product,user,company,shoptime,materialtype,color,category,subcat
 const multer = require('multer');
 
 
+// ADMIN SIDE API---------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// login api
+router.post('/login', function(req, res, next) {
+  console.log(req.body);
+  var pass_word= req.body.password;
+  
+
+  user.findOne({where:{email:req.body.email}}).then(login_data=>{
+     
+
+     if(login_data !== null ){
+      var hashedPassword = login_data.dataValues.password;
+      var password_match = passwordHash.verify(pass_word, hashedPassword);
+      if(password_match == true){
+
+        
+        // //token generate
+        // var token = jwt.sign({check: true}, 'login_auth', {
+        //       expiresIn: '365d'
+        //     });
+
+         res.json({
+              message: 'success',
+              // token: token,
+              user: login_data
+         })
+            
+      }else{
+        res.json({
+          message: 'failure'
+        })
+      }
+     }
+     else {
+        res.json({message: 'admin not found'});
+      }
+
+  });
+  
+});
+
+
+
 
 // get length;
 router.get('/getlength', function(req, res, next) {
@@ -44,7 +87,7 @@ router.get('/:id', function(req, res, next) {
 
   shop.findOne({
       where:{id:req.params.id},
-      include: [{model:user},{model:stype},{model:company}],
+      include: [{model:user},{model:stype},{model:company},{model:shoptime}],
       order: [
           ['id', 'DESC']
       ],
