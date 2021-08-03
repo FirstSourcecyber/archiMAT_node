@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var {shop,stype,sociallink,user,company,shoptime,slider}= require('../sequelize');
+var {shop,stype,sociallink,user,company,shoptime,category,subcategory,materialtype,color, slider}= require('../sequelize');
 const multer = require('multer');
+
 
 
 // get length;
@@ -24,7 +25,7 @@ router.get('/all/:id', function(req, res, next) {
   console.log(req.params.id);
   shop.findAll({
       where:{companyId:req.params.id},
-      include: [{model:user},{model:stype},{model:company},{model: shoptime}],
+      include: [{model:user},{model:stype},{model:company},{model: shoptime},{model: slider}],
       order: [
           ['id', 'DESC']
       ],
@@ -33,6 +34,36 @@ router.get('/all/:id', function(req, res, next) {
       res.json(
           {arks,
         length: arks.length});
+
+  });
+});
+
+
+router.get('/:id', function(req, res, next) {
+
+  shop.findOne({
+      where:{id:req.params.id},
+      include: [{model:user},{model:stype},{model:company}],
+      order: [
+          ['id', 'DESC']
+      ],
+      // limit: 5,
+  }).then(arks => {
+    product.findAll({
+      where:{shopId:req.params.id},
+      include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
+      order: [
+          ['id', 'DESC']
+      ],
+      // limit: 5,
+  }).then(product=>{
+console.log(product);
+        res.json(
+            {
+              shop:arks,
+              product:product
+          });
+      })
 
   });
 });
