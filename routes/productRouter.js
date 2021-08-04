@@ -11,6 +11,7 @@ router.get('/getlength', function(req, res, next) {
         order: [
             ['id', 'DESC']
         ],
+    include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
         // limit: 5,
     }).then(arks => {
         res.json(

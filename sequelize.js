@@ -96,6 +96,9 @@ shop.hasMany(product, {foreignKey: 'shopId', sourceKey: 'id'});
 service.belongsTo(shop);
 shop.hasMany(service, {foreignKey: 'shopId', sourceKey: 'id'});
 
+user.belongsTo(shop);
+shop.hasMany(user, {foreignKey: 'shopId', sourceKey: 'id'});
+
 slider.belongsTo(shop);
 shop.hasMany(slider, {foreignKey: 'shopId', sourceKey: 'id'});
 //product and color
@@ -123,16 +126,16 @@ user.hasMany(product, {foreignKey: 'userId', sourceKey: 'id'});
 company.belongsTo(comp_type);
 // comp_type.hasMany(company, {foreignKey: 'comp_typeId', sourceKey: 'id'});
 //company and type
-company.belongsTo(user);
-user.hasMany(company, {foreignKey: 'userId', sourceKey: 'id'});
+// company.belongsTo(user);
+// user.hasMany(company, {foreignKey: 'userId', sourceKey: 'id'});
 
 //shop and shoptype
 shop.belongsTo(stype);
 // stype.hasMany(shop, {foreignKey: 'stypeId', sourceKey: 'id'});
 
 //shop and user
-shop.belongsTo(user);
-user.hasMany(shop, {foreignKey: 'userId', sourceKey: 'id'});
+// shop.belongsTo(user);
+// user.hasMany(shop, {foreignKey: 'userId',  sourceKey: 'id'});
 
 shoptime.belongsTo(shop);
 shop.hasMany(shoptime, {foreignKey: 'shopId', sourceKey: 'id'});
