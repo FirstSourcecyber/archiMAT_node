@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {shop,stype,sociallink,user,company,shoptime,category,subcategory,materialtype,color, slider}= require('../sequelize');
+var {shop,stype,sociallink,user,company,shoptime,category,subcategory,materialtype,color,product, slider}= require('../sequelize');
 const multer = require('multer');
 
 
@@ -91,7 +91,14 @@ router.get('/:id', function(req, res, next) {
           ['id', 'DESC']
       ],
       // limit: 5,
-  }).then(arks => {
+  }).then(async arks => {
+    var data=await slider.findAll({
+      where:{shopId:req.params.id},
+      order: [
+          ['id', 'DESC']
+      ],
+      // limit: 5,
+  });
     product.findAll({
       where:{shopId:req.params.id},
       include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
@@ -104,7 +111,8 @@ console.log(product);
         res.json(
             {
               shop:arks,
-              product:product
+              product:product,
+              slider:data
           });
       })
 
