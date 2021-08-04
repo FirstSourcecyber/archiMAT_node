@@ -57,6 +57,7 @@ router.get('/getlength', function(req, res, next) {
         order: [
             ['id', 'DESC']
         ],
+        include:[{model: stype},{model:company}]
         // limit: 5,
     }).then(arks => {
         res.json(
