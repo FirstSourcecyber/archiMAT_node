@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {category,subcategory}= require('../sequelize');
+var {category,product,images,color,shop,subcategory,user,materialtype}= require('../sequelize');
 const multer = require('multer');
 router.get('/all/:id', function(req, res, next) {
     
@@ -20,6 +20,30 @@ router.get('/all/:id', function(req, res, next) {
       });
   });
 });
+
+
+
+///mobile api
+router.get('/allprodbysubcat/:id', function(req, res, next) {
+    
+   product.findAll({
+        where:{categoryId:req.params.id,},
+          order: [
+              ['id', 'DESC']
+          ],
+      include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+     
+      }).then(arks => {
+          res.json(
+              {
+                arks:[],
+                product:arks,
+            length: arks.length});
+    
+      });
+
+});
+
 
 
 router.post('/update/:id', function(req, res, next) {

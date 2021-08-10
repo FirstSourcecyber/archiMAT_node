@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {category}= require('../sequelize');
+var {category,product,images,color,shop,subcategory,user,materialtype}= require('../sequelize');
 const multer = require('multer');
 router.get('/all', function(req, res, next) {
 
@@ -19,6 +19,58 @@ router.get('/all', function(req, res, next) {
   });
 });
 
+
+///mobile api
+router.get('/allprodbyallcat', function(req, res, next) {
+
+  category.findAll({
+      order: [
+          ['id', 'DESC']
+      ],
+  }).then(async arks => {
+  var product1=await  product.findAll({
+      order: [
+          ['id', 'DESC']
+      ],
+  include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+ 
+  });
+      res.json(
+          {arks:arks,
+            product:product1,
+        length: arks.length});
+
+  });
+});
+
+///mobile api
+
+router.get('/allprodbycat/:id', function(req, res, next) {
+
+  subcategory.findAll({
+    where:{
+     categoryId: req.params.id,
+    },
+ 
+     order: [
+         ['id', 'DESC']
+     ],
+   }).then(async arks => {
+     var product1=await  product.findAll({
+       where:{categoryId:req.params.id,},
+         order: [
+             ['id', 'DESC']
+         ],
+     include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+    
+     });
+         res.json(
+             {arks:arks,
+               product:product1,
+           length: arks.length});
+   
+     });
+});
 
 router.post('/update/:id', function(req, res, next) {
   const data = req.body;
