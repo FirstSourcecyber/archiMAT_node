@@ -94,7 +94,14 @@ router.get('/:id', function(req, res, next) {
           ['id', 'DESC']
       ],
       // limit: 5,
-  }).then(arks => {
+  }).then(async arks => {
+    var data=await slider.findAll({
+      where:{shopId:req.params.id},
+      order: [
+          ['id', 'DESC']
+      ],
+      // limit: 5,
+  });
     product.findAll({
       where:{shopId:req.params.id},
       include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
@@ -107,7 +114,8 @@ console.log(product);
         res.json(
             {
               shop:arks,
-              product:product
+              product:product,
+              slider:data
           });
       })
 

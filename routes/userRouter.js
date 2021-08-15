@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {user,role}= require('../sequelize');
+var {user,role,shop}= require('../sequelize');
 var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
 const multer = require('multer');
@@ -87,6 +87,99 @@ router.post('/register', function(req, res, next){
   })
   
 });
+
+// login api
+router.post('/userlogin', function(req, res, next) {
+  console.log(req.body);
+  var pass_word= req.body.password;
+  
+
+  user.findOne({where:{email:req.body.email},include: [{model:shop},{model:role}],},).then(async login_data=>{
+     
+
+     if(login_data !== null ){
+      var hashedPassword = login_data.dataValues.password;
+      var password_match = passwordHash.verify(pass_word, hashedPassword);
+      if(password_match == true){
+       await user.update({
+
+          mob_token: req.body.mob_token
+          
+      
+       }, {where: {email: req.body.email}});
+        
+        
+
+         res.json({
+              message: 'success',
+
+              user: login_data
+         })
+            
+      }else{
+        res.json({
+          message: 'failure'
+        })
+      }
+     }
+     else {
+        res.json({message: 'user not found'});
+      }
+
+  });
+  
+});
+
+
+// /* New User Register by mobile. */
+router.post('/userregister', function(req, res, next){
+  console.log(req.body);
+  
+  var password = passwordHash.generate(req.body.password);
+  console.log(password);
+
+ 
+  user.findOne({where:{email:req.body.email}}).then(check_data=> {
+    if (check_data == null){
+      user.create({
+        firstname:req.body.firstname,
+        lastname:req.body.lastname,
+        password:password,
+        email: req.body.email,
+        roleId : 2,
+        phoneNo:null,     
+        image:req.body.image,     
+        mob_token:req.body.mob_token,     
+        status:1,     
+      }).then(resp=>{
+  user.findOne({where:{id:resp.id},include: [{model:shop},{model:role}],},).then(userdata=>{
+
+    res.json({
+      message:'success',
+
+      user:userdata
+    })
+  })
+      });
+    }
+    else{
+      res.json({
+        message:'user already exist'
+      })
+
+    }
+  })
+  
+});
+
+
+
+
+
+
+
+
+
 // profile image upload
 router.post("/uploader", function(req, res) {
   console.log(req.file);
