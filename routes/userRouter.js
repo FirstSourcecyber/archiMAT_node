@@ -140,8 +140,12 @@ router.post('/userregister', function(req, res, next){
   console.log(password);
 
  
-  user.findOne({where:{[Op.or]:[{email:req.body.email},{phoneNo:req.body.phone}]}},).then(check_data=> {
+  user.findOne({where:{email:req.body.email}},).then(check_data=> {
     if (check_data == null){
+      user.findOne({where:{[Op.or]:[{email:req.body.email},{phoneNo:req.body.phone},{phoneNo:req.body.phone}]}},).then(check_data1=> {
+    if (check_data1 == null){
+      user.findOne({where:{[Op.or]:[{email:req.body.email},{phoneNo:req.body.phone},{phoneNo:req.body.phone}]}},).then(check_data2=> {
+        if (check_data2 == null){
       user.create({
         firstname:req.body.firstname,
         lastname:req.body.lastname,
@@ -167,7 +171,23 @@ router.post('/userregister', function(req, res, next){
     }
     else{
       res.json({
-        message:'user already exist'
+        message:'User Name already Taken'
+      })
+
+    }
+    });
+    }
+    else{
+      res.json({
+        message:'Phone Number already Taken'
+      })
+
+    }
+    });
+    }
+    else{
+      res.json({
+        message:'Email already Taken'
       })
 
     }
@@ -186,37 +206,45 @@ router.post('/userregister', function(req, res, next){
   user.findAll({where:{email:req.body.email}},).then(async check_data=> {
     if(check_data!=null&&check_data.id!=req.body.id){
       res.json({
-        message:'Email already exist'
+        message:'Email already Taken'
       })
     }else{
       var userdata=await user.findAll({where:{phoneNo:req.body.phone,}},);
-      if(check_data!=null&&check_data.id!=req.body.id){
+      if(userdata!=null&&userdata.id!=req.body.id){
         res.json({
-          message:'Phone Number already exist'
+          message:'Phone Number already Taken'
         })
       }else{
-        user.update({
-          firstname:req.body.firstname,
-          lastname:req.body.lastname,
-          password:password,
-          email: req.body.email,
-          roleId : 2,
-          phoneNo:req.body.phone,     
-          gender:req.body.gender,     
-          dateofbirth:req.body.birthday,     
-          image:req.body.image,     
-          mob_token:req.body.mob_token,     
-          status:1,     
-        },{where:{id:resp.id}}).then(resp=>{
-    user.findOne({where:{id:res.body.id},include: [{model:shop},{model:role}],},).then(userdata=>{
-  
-      res.json({
-        message:'success',
-  
-        user:userdata
+        var userdata1=await user.findAll({where:{phoneNo:req.body.phone,}},);
+        if(userdata1!=null&&userdata1.id!=req.body.id){
+          res.json({
+            message:'User Name already Taken'
+          })
+        }else{
+          user.update({
+            firstname:req.body.firstname,
+            username:req.body.username,
+            lastname:req.body.lastname,
+            password:password,
+            email: req.body.email,
+            roleId : 2,
+            phoneNo:req.body.phone,     
+            gender:req.body.gender,     
+            dateofbirth:req.body.birthday,     
+            image:req.body.image,     
+            mob_token:req.body.mob_token,     
+            status:1,     
+          },{where:{id:resp.id}}).then(resp=>{
+      user.findOne({where:{id:res.body.id},include: [{model:shop},{model:role}],},).then(userdata=>{
+    
+        res.json({
+          message:'success',
+    
+          user:userdata
+        })
       })
-    })
-        });
+          });
+        }
       }
     }
     
