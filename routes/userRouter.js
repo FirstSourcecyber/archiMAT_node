@@ -325,7 +325,7 @@ router.post("/forgot", (req, res, next) => {
           });
 
           var mailOptions = {
-              from: 'imsaadi302@gmail.com',
+              from: 'imsaadi302@gmail.com"<no-reply>"',
               to: reqData.email,
               subject: 'Do you want to change you password?',
               html: "<h2>Hello,</h2><br><p>It look like you request a new password<br>If that sounds right, Here is your code:<br></p>" + pa,
@@ -344,7 +344,7 @@ router.post("/forgot", (req, res, next) => {
           });
 
       } else {
-          res.json(0);
+          res.json({message: 'failure'});
       }
   });
 });
@@ -357,6 +357,24 @@ router.get('/getprofile/:id', function(req, res, next){
     }).then(res5 =>{
         console.log(res5);
         res.json({data:res5})
+    })
+  });
+
+  // /*change password */
+router.post('/changepassword', function(req, res, next){
+    var pass_word = passwordHash.generate(req.body.password);
+    user.findOne({
+        where:{email:req.body.email}
+    }).then(res5 =>{
+        if(res5!==null){
+            user.update({
+                password: pass_word
+            },{where:{email: req.body.email}}).then(resp =>{
+            res.json({data:resp, message: 'success'})
+            })
+        }else{
+            res.json({message: 'failure'})
+        }
     })
   });
 
