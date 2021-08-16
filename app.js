@@ -18,6 +18,8 @@ var colorRouter = require('./routes/colorRouter');
 var materialRouter = require('./routes/materialRouter');
 var fileRouter = require('./routes/file');
 var serviceRouter = require('./routes/serviceRouter');
+var fallowRouter = require('./routes/fallowRouter');
+var inboxRouter = require('./routes/inboxRouter');
 
 
 var app = express();
@@ -57,6 +59,8 @@ app.use('/color', colorRouter);
 app.use('/material', materialRouter);
 app.use('/file', fileRouter);
 app.use('/service', serviceRouter);
+app.use('/fallow', fallowRouter);
+app.use('/inbox', inboxRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -18,6 +18,8 @@ const CompanytypeModel = require('./models/company_type');
 const shopTimeModel = require('./models/shoptiming');
 const serviceModel = require('./models/service');
 const sliderModel = require('./models/homeslider');
+const inboxModel = require('./models/inbox');
+const fallowModel = require('./models/fallow');
 
 const sequelize = new Sequelize('archimat', 'root', '', {
     host: 'localhost',
@@ -75,15 +77,30 @@ const comp_type = CompanytypeModel(sequelize, Sequelize);
 const shoptime = shopTimeModel(sequelize, Sequelize);
 const service = serviceModel(sequelize, Sequelize);
 const slider = sliderModel(sequelize, Sequelize);
+const inbox = inboxModel(sequelize, Sequelize);
+const fallow = fallowModel(sequelize, Sequelize);
 
 
-// admin and user
-// admin.belongsTo(user);
-// user.hasMany(admin, {foreignKey: 'userId', sourceKey: 'id'});
 
 //role and user
 user.belongsTo(role);
 role.hasMany(user, {foreignKey: 'roleId', sourceKey: 'id'});
+
+//user and inbox
+inbox.belongsTo(user);
+user.hasMany(inbox, {foreignKey: 'userId', sourceKey: 'id'});
+
+//shop and inbox
+inbox.belongsTo(shop);
+shop.hasMany(inbox, {foreignKey: 'shopId', sourceKey: 'id'});
+
+//user and inbox
+fallow.belongsTo(user);
+user.hasMany(fallow, {foreignKey: 'userId', sourceKey: 'id'});
+
+//shop and inbox
+fallow.belongsTo(shop);
+shop.hasMany(fallow, {foreignKey: 'shopId', sourceKey: 'id'});
 
 //category and subcategory
 subcategory.belongsTo(category);
@@ -125,26 +142,18 @@ user.hasMany(product, {foreignKey: 'userId', sourceKey: 'id'});
 //company and user
 company.belongsTo(comp_type);
 // comp_type.hasMany(company, {foreignKey: 'comp_typeId', sourceKey: 'id'});
-//company and type
-// company.belongsTo(user);
-// user.hasMany(company, {foreignKey: 'userId', sourceKey: 'id'});
+
 
 //shop and shoptype
 shop.belongsTo(stype);
 // stype.hasMany(shop, {foreignKey: 'stypeId', sourceKey: 'id'});
 
-//shop and user
-// shop.belongsTo(user);
-// user.hasMany(shop, {foreignKey: 'userId',  sourceKey: 'id'});
 
 shoptime.belongsTo(shop);
 shop.hasMany(shoptime, {foreignKey: 'shopId', sourceKey: 'id'});
 
 shop.belongsTo(company);
 company.hasMany(shop, {foreignKey: 'companyId', sourceKey: 'id'});
-// //shop and social link
-// sociallink.belongsTo(shop);
-// shop.hasMany(sociallink, {foreignKey: 'shopId', sourceKey: 'id'});
 
 try {
     sequelize.authenticate();
@@ -162,6 +171,8 @@ module.exports = {
     category,   
     subcategory,
     user,
+    inbox,
+    fallow,
     role,
     company,
     shop,

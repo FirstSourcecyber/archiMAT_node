@@ -9,6 +9,8 @@ module.exports = (sequelize, type) => {
         lastname: type.STRING,
         email: type.STRING,
         phoneNo: type.STRING,
+        gender: type.STRING,
+        dateofbirth: type.STRING,
         password: type.STRING,
         mob_token: type.STRING,
         image: type.STRING,

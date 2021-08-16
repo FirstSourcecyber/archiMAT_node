@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
 const multer = require('multer');
 const nodemailer = require("nodemailer");
+const { Op } = require('sequelize')
 var generator = require('generate-password');
 
 // ADMIN SIDE API---------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -139,7 +140,7 @@ router.post('/userregister', function(req, res, next){
   console.log(password);
 
  
-  user.findOne({where:{email:req.body.email}}).then(check_data=> {
+  user.findOne({where:{[Op.or]:[{email:req.body.email},{phoneNo:req.body.phone}]}},).then(check_data=> {
     if (check_data == null){
       user.create({
         firstname:req.body.firstname,
@@ -147,7 +148,9 @@ router.post('/userregister', function(req, res, next){
         password:password,
         email: req.body.email,
         roleId : 2,
-        phoneNo:null,     
+        phoneNo:req.body.phone,     
+        gender:req.body.gender,     
+        dateofbirth:req.body.birthday,     
         image:req.body.image,     
         mob_token:req.body.mob_token,     
         status:1,     
@@ -171,6 +174,57 @@ router.post('/userregister', function(req, res, next){
   })
   
 });
+
+// /* New User Register by mobile. */
+router.post('/userregister', function(req, res, next){
+  console.log(req.body);
+  
+  var password = passwordHash.generate(req.body.password);
+  console.log(password);
+
+ 
+  user.findAll({where:{email:req.body.email}},).then(async check_data=> {
+    if(check_data!=null&&check_data.id!=req.body.id){
+      res.json({
+        message:'Email already exist'
+      })
+    }else{
+      var userdata=await user.findAll({where:{phoneNo:req.body.phone,}},);
+      if(check_data!=null&&check_data.id!=req.body.id){
+        res.json({
+          message:'Phone Number already exist'
+        })
+      }else{
+        user.update({
+          firstname:req.body.firstname,
+          lastname:req.body.lastname,
+          password:password,
+          email: req.body.email,
+          roleId : 2,
+          phoneNo:req.body.phone,     
+          gender:req.body.gender,     
+          dateofbirth:req.body.birthday,     
+          image:req.body.image,     
+          mob_token:req.body.mob_token,     
+          status:1,     
+        },{where:{id:resp.id}}).then(resp=>{
+    user.findOne({where:{id:res.body.id},include: [{model:shop},{model:role}],},).then(userdata=>{
+  
+      res.json({
+        message:'success',
+  
+        user:userdata
+      })
+    })
+        });
+      }
+    }
+    
+    
+  })
+  
+});
+
 
 
 
@@ -340,6 +394,69 @@ router.get('/getlength', function(req, res, next) {
              length: arks.length});
   
     });
+  });
+
+
+
+
+
+
+  router.post("/sendemail", (req, res, next) => {
+    var reqData = req.body.email;
+    console.log(reqData);
+    var data=1;
+    user.findAll().then(async resp=>{
+
+   
+      var transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+          auth: {
+              user: 'zeeshan.jelani78@gmail.com',
+              pass: '70584810'
+          }
+      });
+    for(var i=0;i<reqData.length;i++){
+
+
+      var mailOptions = {
+          from: 'zeeshan.jelani78@gmail.com',
+          to: reqData[i].email,
+          subject: 'Electric and Gas Prices Increase',
+          html: '<h4>Hi Sir/Mam</h4><p>Electric and Gas Prices increase 25% since March 2021 and Ofgem announce more increase in Prices upto 50% from 1st of October 2021.Please Check BBC report,</p><a href="https://www.bbc.com/news/business-58106105">https://www.bbc.com/news/business-58106105</a><p>But don’t worry U consultants working with top 27 Energy Suppliers in the UK. We`ll pay you £1,000 If We Can`t Beat Your Current Quote. You only need to send your Electricity and Gas Bill with the current Supplier. Let`s Get You The Best Price.<br><br><u>Afraid of Penalty Charges?</u><br><br>If you’re with a good supplier and don’t want to change your supplier, price depending, we can provide you cheaper rates than you are already paying and you don’t need to change your current supplier. However, if switching energy supplier is necessary then we take Full Responsibility to Bring You out of Current Contract without Paying a Single Penny or You Can Cancel Your Contract with Us Any Time.<br><br>Thanks & Regards.<br>'
+          +reqData[i].name+'<br>Sales Advisior</p>'
+          +'<h4 style="color: blue;">Tel:+44 203 9833454</h4><h4 style="color: blue;">Office Address,</h4><h4 style="color: blue;">First Floor,10 Queen Street Place, London EC4R 1BE</h4>',
+          attachments: []
+      };
+
+
+     await transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+              console.log(error);
+              reqData[i]['responce']= error;
+          } else {
+            reqData[i]['responce']= info.response;
+
+              console.log('Email sent: ' + info.response);
+          }
+      });
+      data++;
+    }
+
+    // if(data==reqData.length){
+
+      res.json({
+        message: 'success',
+        email:reqData,
+    });
+    // }
+  })
+                // text: 'It look like you request a new password\n' + 'If that sounds right, Here is your code' + pa,
+  
+  
+      
+    // });
   });
 
 

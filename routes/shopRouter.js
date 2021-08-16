@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
-var {shop,stype,sociallink,user,company,shoptime,category,subcategory,materialtype,color, slider,product,role}= require('../sequelize');
+var {shop,stype,sociallink,user,company,shoptime,category,subcategory,materialtype,color, slider,product,role,fallow,images}= require('../sequelize');
 const multer = require('multer');
 
 
@@ -85,43 +85,48 @@ router.get('/all/:id', function(req, res, next) {
 });
 
 
-router.get('/:id', function(req, res, next) {
-
-  shop.findOne({
-      where:{id:req.params.id},
-      include: [{model:user},{model:stype},{model:company},{model:shoptime}],
-      order: [
-          ['id', 'DESC']
-      ],
-      // limit: 5,
-  }).then(async arks => {
-    var data=await slider.findAll({
-      where:{shopId:req.params.id},
-      order: [
-          ['id', 'DESC']
-      ],
-      // limit: 5,
+router.post('/shopdetail', function(req, res, next) {
+  console.log(req.body);
+    shop.findOne({
+        where:{id:req.body.shop},
+        include: [{model:user},{model:stype},{model:company},{model:shoptime}],
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    }).then(async arks => {
+      
+      product.findAll({
+        where:{shopId:req.body.shop},
+        include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory},{model: images}],
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    }).then(async product=>{
+      var fallow2=await fallow.findAll({where:{shopId:req.body.shop}});
+      var fallow1=await fallow.findOne({where:{shopId:req.body.shop,userId:req.body.user}});
+      var data=await slider.findAll({
+        where:{shopId:req.body.shop},
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    });
+  // console.log(product);
+          res.json(
+              {
+                shop:arks,
+                product:product,
+                fallow:fallow2.length,
+                youfallow:fallow1!=null?true:false,
+                slider:data
+            });
+        })
+  
+    });
   });
-    product.findAll({
-      where:{shopId:req.params.id},
-      include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory}],
-      order: [
-          ['id', 'DESC']
-      ],
-      // limit: 5,
-  }).then(product=>{
-console.log(product);
-        res.json(
-            {
-              shop:arks,
-              product:product,
-              slider:data
-          });
-      })
-
-  });
-});
-
+  
 
 router.post('/update/:id', function(req, res, next) {
   const data = req.body;
