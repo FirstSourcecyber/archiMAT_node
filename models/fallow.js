@@ -5,9 +5,5 @@ module.exports = (sequelize, type) => {
             primaryKey: true,
             autoIncrement: true
         },
-      
-        
-        
-
     })
 }
