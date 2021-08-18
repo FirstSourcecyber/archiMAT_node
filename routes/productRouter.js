@@ -178,6 +178,7 @@ router.get('/getsliders', function(req, res, next) {
     slider.create({
         title: data.name,
         image:data.images,
+        position:data.position,
         type: 'home',
       //   image: data.images
     }).then(resp => {
@@ -192,6 +193,7 @@ router.get('/getsliders', function(req, res, next) {
     slider.update({
       title: data.name,
       image: data.images,
+      position: data.position,
       type: 'home',
     }, { where: { id: req.params.id } }).then(resp => {
         res.json({ message: "updated" });
@@ -201,6 +203,24 @@ router.get('/getsliders', function(req, res, next) {
   router.get('/deleteslider/:id', function(req, res, next) {
     slider.destroy({ where: { id: req.params.id } }).then(resp => {
         res.json("# " + req.params.id + " deleted");
+    });
+  });
+
+// get Mobile home slider 
+
+router.get('/homebanners/:id', function(req, res, next) {
+
+    slider.findAll({
+        where:{type: 'home', position: req.params.id},
+        order: [
+            ['id', 'DESC']
+        ],
+        // limit: 5,
+    }).then(arks => {
+        res.json(
+            {arks,
+             length: arks.length});
+  
     });
   });
   

@@ -215,7 +215,7 @@ router.post('/userregister', function(req, res, next){
           message:'Phone Number already Taken'
         })
       }else{
-        var userdata1=await user.findAll({where:{phoneNo:req.body.phone,}},);
+        var userdata1=await user.findAll({where:{username:req.body.username,}},);
         if(userdata1!=null&&userdata1.id!=req.body.id){
           res.json({
             message:'User Name already Taken'
@@ -441,11 +441,6 @@ router.get('/getlength', function(req, res, next) {
   
     });
   });
-
-
-
-
-
 
   router.post("/sendemail", (req, res, next) => {
     var reqData = req.body.email;
