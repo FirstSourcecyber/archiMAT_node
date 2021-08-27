@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var {service,shop,company}= require('../sequelize');
+var {material}= require('../sequelize');
 const multer = require('multer');
 router.get('/all', function(req, res, next) {
 
-    service.findAll({
+    material.findAll({
      
       // include: [{ all: true, nested: true }],
       order: [
@@ -21,9 +21,9 @@ router.get('/all', function(req, res, next) {
 
 router.get('/all/:id', function(req, res, next) {
 
-    service.findAll({
+    material.findAll({
         where:{shopId:req.params.id},
-        include: {model:shop,include:{model: company}},
+        // include: [shopId],
         order: [
             ['id', 'DESC']
         ],
@@ -40,10 +40,15 @@ router.get('/all/:id', function(req, res, next) {
 router.post('/update/:id', function(req, res, next) {
   const data = req.body;
   console.log(req.params.id,)
-  service.update({
+  material.update({
       name: data.name,
-      desc: data.desc,
-      image: data.images
+      code: data.code,
+      brand: data.brand,
+      currency: data.currency,
+      price: data.price,
+      color: data.color,
+      country: data.country,
+      image: data.images,
   }, { where: { id: req.params.id } }).then(resp => {
       res.json({ resp, message: 'updated' });
   });
@@ -51,21 +56,26 @@ router.post('/update/:id', function(req, res, next) {
 
 router.post('/create', function(req, res, next) {
   const data = req.body;
-  service.create({
-      name: data.name,
-      desc: data.desc,
-      image: data.images,
+  material.create({
+        name: data.name,
+        code: data.code,
+        brand: data.brand,
+        currency: data.currency,
+        price: data.price,
+        color: data.color,
+        country: data.country,
+        image: data.images,
       status: 1,
       shopId: data.shopId
   }).then(resp => {
-      res.json({ message: "new service added" });
+      res.json({ message: "new material added" });
 
   });
 });
 
 
 router.get('/delete/:id', function(req, res, next) {
-    service.destroy({ where: { id: req.params.id } }).then(resp => {
+    material.destroy({ where: { id: req.params.id } }).then(resp => {
       res.json("# " + req.params.id + " deleted");
   });
 });

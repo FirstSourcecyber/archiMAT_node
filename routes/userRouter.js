@@ -433,7 +433,7 @@ router.get('/userblock/:id', function(req, res, next){
 router.get('/getlength', function(req, res, next) {
 
     user.findAll({
-        where:{roleId: 3},
+        where:{roleId: 2},
     }).then(arks => {
         res.json(
             {arks,

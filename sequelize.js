@@ -20,6 +20,7 @@ const serviceModel = require('./models/service');
 const sliderModel = require('./models/homeslider');
 const inboxModel = require('./models/inbox');
 const fallowModel = require('./models/fallow');
+const MaterialModel = require('./models/material');
 
 const sequelize = new Sequelize('archimat', 'root', '', {
     host: 'localhost',
@@ -79,6 +80,7 @@ const service = serviceModel(sequelize, Sequelize);
 const slider = sliderModel(sequelize, Sequelize);
 const inbox = inboxModel(sequelize, Sequelize);
 const fallow = fallowModel(sequelize, Sequelize);
+const material = MaterialModel(sequelize, Sequelize);
 
 
 
@@ -113,14 +115,17 @@ shop.hasMany(product, {foreignKey: 'shopId', sourceKey: 'id'});
 service.belongsTo(shop);
 shop.hasMany(service, {foreignKey: 'shopId', sourceKey: 'id'});
 
+material.belongsTo(shop);
+shop.hasMany(material, {foreignKey: 'shopId', sourceKey: 'id'});
+
 user.belongsTo(shop);
 shop.hasMany(user, {foreignKey: 'shopId', sourceKey: 'id'});
 
 slider.belongsTo(shop);
 shop.hasMany(slider, {foreignKey: 'shopId', sourceKey: 'id'});
 //product and color
-product.belongsTo(color);
-color.hasMany(product, {foreignKey: 'colorId', sourceKey: 'id'});
+// product.belongsTo(color);
+// color.hasMany(product, {foreignKey: 'colorId', sourceKey: 'id'});
 
 //product and materialtype
 product.belongsTo(materialtype);
@@ -185,5 +190,6 @@ module.exports = {
     comp_type,
     shoptime,
     service,
-    slider
+    slider,
+    material
 };

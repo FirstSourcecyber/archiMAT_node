@@ -1,17 +1,18 @@
 var express = require('express');
 var router = express.Router();
-var {product,user,shop,materialtype,color,category,subcategory,images,slider}= require('../sequelize');
+var {product,user,shop,materialtype,category,subcategory,images,slider}= require('../sequelize');
 const multer = require('multer');
-
+const { Op } = require("sequelize");
 
 // get length;
 router.get('/getlength', function(req, res, next) {
-
+    
     product.findAll({
         order: [
             ['id', 'DESC']
         ],
-    include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+        
+    include:[{model: category},{model: subcategory},{model: materialtype},{model:images},{model:user},{model:shop}]
         // limit: 5,
     }).then(arks => {
         res.json(
@@ -25,7 +26,8 @@ router.get('/getlength', function(req, res, next) {
 router.get('/all', function(req, res, next) {
 
   product.findAll({
-    include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory},{model:images}],
+      
+    include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images}],
       order: [
           ['id', 'DESC']
       ],
@@ -41,7 +43,7 @@ router.get('/all/:id', function(req, res, next) {
 
   product.findAll({
       where:{shopId:req.params.id},
-      include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory},{model:images}],
+      include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images}],
       order: [
           ['id', 'DESC']
       ],
@@ -65,11 +67,13 @@ router.post('/update/:id', function(req, res, next) {
     stock: data.stock,
     desc: data.desc,
     size: data.size,
+    currency: data.currency,
     productCode: data.code,
     shopId: data.shopId,
-    colorId: data.color_id,
+    color: data.color_id,
     materialTypeId: data.mat_typeId,
     userId: 2,
+    isvirtual: data.isvirtual,
     categoryId: data.cat_id,
     subcategoryId: data.subCat_id,
     status: true,
@@ -108,13 +112,15 @@ router.post('/create', function(req, res, next) {
       stock: data.stock,
       desc: data.desc,
       size: data.size,
+      currency: data.currency,
       productCode: data.code,
       shopId: data.shopId,
-      colorId: data.color_id,
+      color: data.color_id,
       materialTypeId: data.mat_typeId,
       userId: 2,
       categoryId: data.cat_id,
       subcategoryId: data.subCat_id,
+      isvirtual: data.isvirtual,
       status: true,
     //   image: data.images
   }).then(resp => {
@@ -220,7 +226,6 @@ router.get('/homebanners/:id', function(req, res, next) {
         res.json(
             {arks,
              length: arks.length});
-  
     });
   });
   

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {company,user,comp_type}= require('../sequelize');
+var {company,user,comp_type,shop,product}= require('../sequelize');
 const multer = require('multer');
 
 router.get('/all', function(req, res, next) {
