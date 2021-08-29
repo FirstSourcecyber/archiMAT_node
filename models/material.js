@@ -1,19 +1,18 @@
 module.exports = (sequelize, type) => {
-    return sequelize.define('product', {
+    return sequelize.define('material', {
         id: {
             type: type.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
         name: type.STRING,
-        price: type.STRING,
-        desc: type.TEXT,
-        stock: type.INTEGER,
-        size: type.STRING,
+        code: type.STRING,
         currency: type.STRING,
-        productCode: type.STRING,
-        isvirtual:type.BOOLEAN,
+        price: type.STRING,
+        brand: type.STRING,
         color: type.STRING,
-        status: type.BOOLEAN
+        country: type.STRING,
+        image: type.STRING,
+        status: type.BOOLEAN,
     })
 }

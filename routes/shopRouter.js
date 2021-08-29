@@ -57,13 +57,15 @@ router.get('/getlength', function(req, res, next) {
         order: [
             ['id', 'DESC']
         ],
-        include:[{model: stype},{model:company}]
+        // where:{
+        //     companyId:{[Op.ne]:null}
+        // },
+        include:[{model: stype},{model:company,}]
         // limit: 5,
     }).then(arks => {
         res.json(
             {arks,
              length: arks.length});
-  
     });
   });
 
@@ -286,32 +288,43 @@ router.get('/all/allshopusers/:id', function(req, res, next) {
    
     user.findOne({where:{email:req.body.email}}).then(check_data=> {
       if (check_data == null){
-        user.create({
-          firstname:req.body.fname,
-          lastname:req.body.lname,
-          password:pass_word,
-          email: req.body.email,
-          roleId : req.body.roleId,
-          shopId : req.body.shopId,
-          phoneNo : req.body.phone,
-          phoneNo:null,     
-          image:req.body.images,     
-          mob_token:null,     
-          status:1,     
-        }).then(resp=>{
-          // var token = jwt.sign({check: true}, 'login_auth', {
-          //   expiresIn: '2d'
-          // });
-        res.json({
-          message:'success',
-          // token:token,
-          user:resp
-        })
+        user.findOne({where:{username:req.body.username}}).then(check_data1 => {
+            if(check_data1 == null){
+                user.create({
+                    firstname:req.body.fname,
+                    lastname:req.body.lname,
+                    password:pass_word,
+                    email: req.body.email,
+                    roleId : req.body.roleId,
+                    shopId : req.body.shopId,
+                    phoneNo : req.body.phone,
+                    image:req.body.images,    
+                    username: req.body.username,
+                    gender: req.body.gender,
+                    dateofbirth: req.body.dob, 
+                    mob_token:null,     
+                    status:1,     
+                  }).then(resp=>{
+                    // var token = jwt.sign({check: true}, 'login_auth', {
+                    //   expiresIn: '2d'
+                    // });
+                  res.json({
+                    message:'success',
+                    // token:token,
+                    user:resp
+                  })
+                  });
+            }else{
+                res.json({
+                    message:'Username already exist'
+                  })
+            }
         });
+       
       }
       else{
         res.json({
-          message:'user already exist'
+          message:'User email already exist'
         })
   
       }
@@ -322,7 +335,8 @@ router.get('/all/allshopusers/:id', function(req, res, next) {
   router.post('/all/updateuser/:id', function(req, res, next) {
       console.log(req.body);
     if(req.body.pass !== ''){
-
+      
+          
         var pass_word = passwordHash.generate(req.body.pass);
         user.update({
             firstname: req.body.fname,
@@ -332,7 +346,10 @@ router.get('/all/allshopusers/:id', function(req, res, next) {
             shopId : req.body.shopId,
             phoneNo : req.body.phone,
             roleId : req.body.roleId,
-            image: req.body.images
+            image: req.body.images,
+            username: req.body.username,
+            gender: req.body.gender,
+            dateofbirth: req.body.dob,
         }, { where: { id: req.body.id } }).then(resp => {
            
       
@@ -354,7 +371,10 @@ router.get('/all/allshopusers/:id', function(req, res, next) {
         phoneNo: req.body.phone,
         shopId : req.body.shopId,
         roleId : req.body.roleId,
-        image: req.body.images
+        image: req.body.images,
+        username: req.body.username,
+        gender: req.body.gender,
+        dateofbirth: req.body.dob,
      }, { where: { id: req.body.id } }).then(resp => {
        
        user.findOne({
