@@ -224,6 +224,25 @@ router.get('/homebanners/:id', function(req, res, next) {
     });
   });
   
+  //mobile api
+router.get('/getallsliders', function(req, res, next) {
+  slider.findAll({
+    where:{type: 'home',position:1},
+    order: [
+      ['id', 'DESC']
+    ],
+    // limit: 5,
+  }).then(async arks => {
+    var slider2=await slider.findAll({ where:{type: 'home',position:2},order: [['id', 'DESC']],});
+    var slider3=await slider.findAll({ where:{type: 'home',position:3},order: [['id', 'DESC']],});
+      res.json(
+          {slider1:arks,
+            slider2:slider2,
+            slider3:slider3,
+           });
+
+  });
+});
 
 
 module.exports = router;
