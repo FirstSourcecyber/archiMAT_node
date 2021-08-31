@@ -78,13 +78,13 @@ router.post('/update/:id', function(req, res, next) {
     subcategoryId: data.subCat_id,
     status: true,
     // image: data.images
-  }, { where: { id: req.params.id } }).then(resp => {
-
-    for(var i = 0; i< data.images.length; i++){
+  }, { where: { id: req.params.id } }).then(async resp => {
+var data=await images.destroy({ where: { productId: req.params.id } });
+    for(var i = 0; i< req.body.images1.length; i++){
         // if(data.images[i]['id'] == -1){
 
             images.create({
-                image: data.images[i]['filename'],
+                image: req.body.images1[i]['image'],
                 productId: req.params.id
               }).then(data =>{
                   console.log('added images');
