@@ -11,6 +11,8 @@ module.exports = (sequelize, type) => {
         address: type.STRING,
         city: type.STRING,
         desc: type.STRING,
+        lat: type.STRING,
+        lng: type.STRING,
         address: type.STRING,
         website: type.STRING,
         fb: type.STRING,
