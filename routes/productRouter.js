@@ -124,10 +124,10 @@ router.post('/create', function(req, res, next) {
       status: true,
     //   image: data.images
   }).then(resp => {
-      for(var i = 0; i< data.images.length; i++){
+      for(var i = 0; i< req.body.images1.length; i++){
 
         images.create({
-            image: data.images[i]['filename'],
+            image: req.body.images1[i]['filename'],
             productId: resp['id']
           }).then(data =>{
               console.log('added images');

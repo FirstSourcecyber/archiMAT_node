@@ -91,17 +91,17 @@ router.post('/register', function(req, res, next){
 
 // login api
 router.post('/userlogin', function(req, res, next) {
-  console.log(req.body);
+  console.log(req.body.email);
   var pass_word= req.body.password;
   
 
   user.findOne({where:{email:req.body.email},include: [{model:shop},{model:role}],},).then(async login_data=>{
-     console.log(login_data);
+    //  console.log(login_data);
 
      if(login_data !== null ){
-       console.log(login_data.dataValues.password);
+      //  console.log(login_data.dataValues.password);
       var hashedPassword = login_data.dataValues.password;
-      console.log(hashedPassword);
+      // console.log(hashedPassword);
       var password_match = passwordHash.verify(pass_word, hashedPassword);
       if(password_match == true){
        await user.update({
@@ -120,12 +120,15 @@ router.post('/userlogin', function(req, res, next) {
          })
             
       }else{
+        console.log('failure');
         res.json({
           message: 'failure'
         })
       }
      }
      else {
+      console.log('user not found');
+
         res.json({message: 'user not found'});
       }
 

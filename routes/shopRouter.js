@@ -100,7 +100,7 @@ router.post('/shopdetail', function(req, res, next) {
       
       product.findAll({
         where:{shopId:req.body.shop},
-        include: [{model:user},{model:shop},{model:materialtype},{model: color},{model: category},{model:subcategory},{model: images}],
+        include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model: images}],
         order: [
             ['id', 'DESC']
         ],
