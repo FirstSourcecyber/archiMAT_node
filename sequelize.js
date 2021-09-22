@@ -22,18 +22,7 @@ const inboxModel = require('./models/inbox');
 const fallowModel = require('./models/fallow');
 const MaterialModel = require('./models/material');
 
-// const sequelize = new Sequelize('archimat', 'root', '', {
-//     host: 'localhost',
-//     dialect: 'mysql',
-   
-//     pool: {
-//         max: 10,
-//         min: 0,
-//         acquire: 30000,
-//         idle: 10000
-//     }
-// });
-const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
+const sequelize = new Sequelize('archimat', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
    
@@ -44,6 +33,17 @@ const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
         idle: 10000
     }
 });
+// const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+   
+//     pool: {
+//         max: 10,
+//         min: 0,
+//         acquire: 30000,
+//         idle: 10000
+//     }
+// });
 
 // const sequelize = new Sequelize('archimat', 'root', 'Ali@12345', {
 //   host: 'localhost',
@@ -167,10 +167,10 @@ try {
     console.error('Unable to connect to the database:', error);
   }
 
-sequelize.sync({ alter: true})
-    .then(() => {
-        console.log(`Database & tables created!`)
-    }); 
+// sequelize.sync({ alter: true})
+//     .then(() => {
+//         console.log(`Database & tables created!`)
+//     }); 
 
 module.exports = {
     category,   
