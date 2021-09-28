@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var {category,product,images,color,shop,subcategory,user,materialtype,service,slider,material}= require('../sequelize');
+var {category,product,images,color,shop,subcategory,user,materialtype,service,slider,material,company}= require('../sequelize');
 const multer = require('multer');
 const { Op } = require("sequelize");
 
@@ -24,7 +24,10 @@ var vrproduct=await product.findAll({where:{isvirtual:true},include: [{model:use
 
             //  [Op.not]:[{virtual_mall:null},{virtual_mall:""}],
             //  [Op.not]:[{virtual_showroom:null},{virtual_showroom:''}]}
-            },order: [['id', 'DESC']],});
+            },order: [['id', 'DESC']],
+            include:[{model:company}]
+
+          });
 
 
 

@@ -14,35 +14,45 @@ router.post('/', function(req, res, next) {
         shopId:data.shop,
         userId:data.user
       }).then(resp=>{
-        res.json({ message: "Fallow Successfully" });
+        res.json({ message: "Follow Shop Successfully" });
       })
     }else{
       fallow.destroy({where:{shopId:data.shop,userId:data.user} }).then(resp => {
 
-        res.json({ message: "Unfallow Successfully" });
+        res.json({ message: "Unfollow Successfully" });
       })
     }
   })
 
 });
 
-router.post('/create', function(req, res, next) {
+router.post('/followbyscan', function(req, res, next) {
   const data = req.body;
-  category.create({
-      name: data.name,
-      image: data.images
-  }).then(resp => {
-      res.json({ message: "new category added" });
+  shop.findOne({where:{id:data.shop}}).then(shoptest=>{
+if(shoptest==null){
+  res.json({ message: "Wrong QR Code" });
+}else{
 
-  });
+  fallow.findOne({where:{shopId:data.shop,userId:data.user}}).then(check=>{
+    if(check==null){
+      fallow.create({
+        shopId:data.shop,
+        userId:data.user
+      }).then(resp=>{
+        res.json({ message: "Follow Shop Successfully" });
+      })
+    }else{
+     
+
+        res.json({ message: "Already Follow This Shop" });
+     
+    }
+  })
+}
+  })
+
 });
 
-
-router.get('/delete/:id', function(req, res, next) {
-    category.destroy({ where: { id: req.params.id } }).then(resp => {
-      res.json("# " + req.params.id + " deleted");
-  });
-});
 
 
 
