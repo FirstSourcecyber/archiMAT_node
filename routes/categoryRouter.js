@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var {category,product,images,color,shop,subcategory,user,materialtype}= require('../sequelize');
+var {category,product,images,shop,subcategory,user,materialtype}= require('../sequelize');
 const multer = require('multer');
+const { Op } = require("sequelize");
 router.get('/all', function(req, res, next) {
 
   category.findAll({
@@ -28,11 +29,11 @@ router.get('/allprodbyallcat', function(req, res, next) {
           ['id', 'DESC']
       ],
   }).then(async arks => {
-  var product1=await  product.findAll({
+  var product1=await  product.findAll({where:{[Op.not]:{shopId:null}},
       order: [
           ['id', 'DESC']
       ],
-  include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+  include:[{model: category},{model: subcategory},{model: materialtype},{model:images},{model:user},{model:shop}]
  
   });
       res.json(
@@ -61,7 +62,7 @@ router.get('/allprodbycat/:id', function(req, res, next) {
          order: [
              ['id', 'DESC']
          ],
-     include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+     include:[{model: category},{model: subcategory},{model: materialtype},{model:images,where:{[Op.not]:{image:null}}},{model:user},{model:shop}]
     
      });
          res.json(

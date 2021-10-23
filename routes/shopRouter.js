@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
-var {shop,stype,sociallink,user,company,shoptime,category,subcategory,materialtype,color, slider,product,role,fallow,images}= require('../sequelize');
+var {shop,stype,service,user,company,shoptime,category,subcategory,materialtype,material, slider,product,role,fallow,images}= require('../sequelize');
 const multer = require('multer');
 
 
@@ -98,15 +98,12 @@ router.post('/shopdetail', function(req, res, next) {
         // limit: 5,
     }).then(async arks => {
       
-      product.findAll({
-        where:{shopId:req.body.shop},
-        include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model: images}],
-        order: [
-            ['id', 'DESC']
-        ],
+      product.findAll({where:{shopId:req.body.shop},include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images}],order: [['id', 'DESC']],
         // limit: 5,
     }).then(async product=>{
-      var fallow2=await fallow.findAll({where:{shopId:req.body.shop}});
+      // var fallow2=await fallow.findAll({where:{shopId:req.body.shop}});
+      var shopservice=await service.findAll({where:{shopId:req.body.shop},order: [['id', 'DESC']]});
+      var shopmaterial=await material.findAll({where:{shopId:req.body.shop},order: [['id', 'DESC']]});
       var fallow1=await fallow.findOne({where:{shopId:req.body.shop,userId:req.body.user}});
       var data=await slider.findAll({
         where:{shopId:req.body.shop},
@@ -120,7 +117,9 @@ router.post('/shopdetail', function(req, res, next) {
               {
                 shop:arks,
                 product:product,
-                fallow:fallow2.length,
+                material:shopmaterial,
+                service:shopservice,
+                // fallow:fallow2.length,
                 youfallow:fallow1!=null?true:false,
                 slider:data
             });

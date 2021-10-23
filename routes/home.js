@@ -10,9 +10,9 @@ const { Op } = require("sequelize");
 
 router.get('/all',async function(req, res, next)  {
 var allcategory=await   category.findAll({order: [['id', 'DESC']],});
-var vrproduct=await product.findAll({where:{isvirtual:true},include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images,where:{[Op.not]:{}}}],order: [['id', 'DESC']],});
- var allservice=await service.findAll({order: [['id', 'DESC']],include:{model:shop}});
- var allmaterial=await material.findAll({order: [['id', 'DESC']],include:{model:shop}});
+var vrproduct=await product.findAll({where:{isvirtual:true,[Op.not]:{shopId:null}},include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images}],order: [['id', 'DESC']],});
+ var allservice=await service.findAll({where:{[Op.not]:{shopId:null}},order: [['id', 'DESC']],include:{model:shop}});
+ var allmaterial=await material.findAll({where:{[Op.not]:{shopId:null}},order: [['id', 'DESC']],include:{model:shop}});
  var slider1=await slider.findAll({ where:{type: 'home',position:1},order: [['id', 'DESC']],});
  var slider2=await slider.findAll({ where:{type: 'home',position:2},order: [['id', 'DESC']],});
  var slider3=await slider.findAll({ where:{type: 'home',position:3},order: [['id', 'DESC']],});
