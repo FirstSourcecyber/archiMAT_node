@@ -95,7 +95,7 @@ router.post('/userlogin', function(req, res, next) {
   var pass_word= req.body.password;
   
 
-  user.findOne({where:{email:req.body.email},include: [{model:shop},{model:role}],},).then(async login_data=>{
+  user.findOne({where:{email:req.body.email}},).then(async login_data=>{
     //  console.log(login_data);
 
      if(login_data !== null ){
@@ -223,9 +223,10 @@ router.post('/userregisterwithgoogle', function(req, res, next){
 router.post('/userregister', function(req, res, next){
   console.log(req.body);
   
-  var password = passwordHash.generate(req.body.password);
+  var pass_word = passwordHash.generate(req.body.password);
   console.log(password);
-
+var data=req.body;
+data['password']=pass_word;
  
   user.findOne({where:{email:req.body.email}},).then(check_data=> {
     if (check_data == null){
@@ -233,20 +234,7 @@ router.post('/userregister', function(req, res, next){
     if (check_data1 == null){
       user.findOne({where:{username:req.body.username}},).then(check_data2=> {
         if (check_data2 == null){
-      user.create({
-        firstname:req.body.firstname,
-        lastname:req.body.lastname,
-        username:req.body.username,
-        password:password,
-        email: req.body.email,
-        roleId : 2,
-        phoneNo:req.body.phone,     
-        gender:req.body.gender,     
-        // dateofbirth:req.body.birthday,     
-        image:req.body.image,     
-        mob_token:req.body.mob_token,     
-        status:1,     
-      }).then(resp=>{
+      user.create(req.body).then(resp=>{
   user.findOne({where:{id:resp.id},include: [{model:shop},{model:role}],},).then(userdata=>{
 
     res.json({

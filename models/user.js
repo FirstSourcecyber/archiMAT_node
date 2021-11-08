@@ -15,6 +15,8 @@ module.exports = (sequelize, type) => {
         password: type.STRING,
         mob_token: type.STRING,
         image: type.STRING,
+        countrycode: type.STRING,
+        google: type.STRING,
         status: type.BOOLEAN,
     })
 }
