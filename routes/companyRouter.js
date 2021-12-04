@@ -6,7 +6,7 @@ const multer = require('multer');
 router.get('/all', function(req, res, next) {
 
   company.findAll({
-     
+      where:{status: true},
       include: [comp_type],
       order: [
           ['id', 'DESC']
@@ -29,10 +29,12 @@ router.post('/update/:id', function(req, res, next) {
     email: data.email,
     phone: data.phone,
     desc: data.desc,
+    link: data.link,
     experience_years: data.expyears,
     compTypeId: data.type,
     // userId: 2,
-    image: data.images
+    image: data.images,
+    status: true
   }, { where: { id: req.params.id } }).then(resp => {
       res.json({ resp, message: 'updated' });
   });
@@ -46,10 +48,12 @@ router.post('/create', function(req, res, next) {
       email: data.email,
       phone: data.phone,
       desc: data.desc,
+      link: data.link,
       experience_years: data.expyears,
       compTypeId: data.type,
     //   userId: 2,
-      image: data.images
+      image: data.images,
+      status: true
   }).then(resp => {
       res.json({ message: "new company added" });
   });
@@ -57,8 +61,23 @@ router.post('/create', function(req, res, next) {
 
 
 router.get('/delete/:id', function(req, res, next) {
-  company.destroy({ where: { id: req.params.id } }).then(resp => {
-      res.json("# " + req.params.id + " deleted");
+  company.update(
+      {status:false},
+      { where: { id: req.params.id } }).then(resp => {
+        shop.findAll(
+            {status:true},
+            { where:{companyId: req.params.id}
+        }).then(resp1 =>{
+            console.log('response23')
+            console.log(resp1[0].id);
+            var shopid = resp1[0].id;
+            shop.update({status:false},{where:{companyId: req.params.id}}).then(data2 =>{
+                product.update({status:false},{where:{shopId: shopid}}).then(data4 =>{
+                    res.json("# " + req.params.id + " deleted");
+
+                })
+            })
+        })
   });
 });
 

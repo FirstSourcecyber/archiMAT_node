@@ -8,6 +8,7 @@ const { Op } = require("sequelize");
 router.get('/getlength', function(req, res, next) {
     
     product.findAll({
+        where:{status:true},
         order: [
             ['id', 'DESC']
         ],
@@ -26,7 +27,7 @@ router.get('/getlength', function(req, res, next) {
 router.get('/all', function(req, res, next) {
 
   product.findAll({
-      
+    where:{status:true},
     include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images}],
       order: [
           ['id', 'DESC']
@@ -42,7 +43,7 @@ router.get('/all', function(req, res, next) {
 router.get('/all/:id', function(req, res, next) {
 
   product.findAll({
-      where:{shopId:req.params.id},
+      where:{shopId:req.params.id,status: true},
       include: [{model:user},{model:shop},{model:materialtype},{model: category},{model:subcategory},{model:images}],
       order: [
           ['id', 'DESC']
@@ -71,7 +72,7 @@ router.post('/update/:id', function(req, res, next) {
     productCode: data.code,
     shopId: data.shopId,
     color: data.color_id,
-    materialTypeId: data.mat_typeId,
+    // materialTypeId: data.mat_typeId,
     userId: 2,
     isvirtual: data.isvirtual,
     categoryId: data.cat_id,
@@ -116,7 +117,7 @@ router.post('/create', function(req, res, next) {
       productCode: data.code,
       shopId: data.shopId,
       color: data.color_id,
-      materialTypeId: data.mat_typeId,
+    //   materialTypeId: data.mat_typeId,
       userId: 2,
       categoryId: data.cat_id,
       subcategoryId: data.subCat_id,
@@ -124,10 +125,10 @@ router.post('/create', function(req, res, next) {
       status: true,
     //   image: data.images
   }).then(resp => {
-      for(var i = 0; i< data.images.length; i++){
+      for(var i = 0; i< req.body.images1.length; i++){
 
         images.create({
-            image: data.images[i]['filename'],
+            image: req.body.images1[i]['filename'],
             productId: resp['id']
           }).then(data =>{
               console.log('added images');
@@ -140,7 +141,9 @@ router.post('/create', function(req, res, next) {
 
 
 router.get('/delete/:id', function(req, res, next) {
-  product.destroy({ where: { id: req.params.id } }).then(resp => {
+  product.update(
+      {status: false},
+      { where: { id: req.params.id } }).then(resp => {
       res.json("# " + req.params.id + " deleted");
   });
 });

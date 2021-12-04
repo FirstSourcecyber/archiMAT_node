@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var {service,shop,company}= require('../sequelize');
 const multer = require('multer');
-router.get('/all', function(req, res, next) {
+router.get('/allservices', function(req, res, next) {
 
     service.findAll({
      

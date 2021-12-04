@@ -18,6 +18,22 @@ router.get('/all', function(req, res, next) {
 
   });
 });
+router.get('/allshopmaterials', function(req, res, next) {
+
+    material.findAll({
+     
+      // include: [{ all: true, nested: true }],
+      order: [
+          ['id', 'DESC']
+      ],
+      // limit: 5,
+  }).then(arks => {
+      res.json(
+          {arks,
+        length: arks.length});
+
+  });
+});
 
 router.get('/all/:id', function(req, res, next) {
 

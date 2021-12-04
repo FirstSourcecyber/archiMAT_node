@@ -11,5 +11,7 @@ module.exports = (sequelize, type) => {
         desc: type.TEXT,
         experience_years: type.STRING,
         image: type.STRING,
+        link: type.STRING,
+        status: type.BOOLEAN
     })
 }

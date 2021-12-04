@@ -57,9 +57,9 @@ router.get('/getlength', function(req, res, next) {
         order: [
             ['id', 'DESC']
         ],
-        // where:{
-        //     companyId:{[Op.ne]:null}
-        // },
+        where:{
+            status:true
+        },
         include:[{model: stype},{model:company,}]
         // limit: 5,
     }).then(arks => {
@@ -72,7 +72,7 @@ router.get('/getlength', function(req, res, next) {
 router.get('/all/:id', function(req, res, next) {
   console.log(req.params.id);
   shop.findAll({
-      where:{companyId:req.params.id},
+      where:{companyId:req.params.id,status: true},
       include: [{model:user},{model:stype},{model:company},{model: shoptime},{model: slider}],
       order: [
           ['id', 'DESC']
@@ -210,8 +210,15 @@ router.post('/create', function(req, res, next) {
 
 
 router.get('/delete/:id', function(req, res, next) {
-  shop.destroy({ where: { id: req.params.id } }).then(resp => {
-      res.json("# " + req.params.id + " deleted");
+  shop.update(
+      { status: false},
+      { where: { id: req.params.id } }).then(resp => {
+          product.update(
+              {status: false},
+            {where:{ shopId :req.params.id}}).then(data1 =>{
+
+              res.json("# " + req.params.id + " deleted");
+          })
   });
 });
 
