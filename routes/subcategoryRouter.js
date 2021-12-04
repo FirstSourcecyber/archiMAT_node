@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var {category,product,images,color,shop,subcategory,user,materialtype}= require('../sequelize');
+var {category,product,images,shop,subcategory,user,materialtype}= require('../sequelize');
 const multer = require('multer');
+
+const { Op } = require("sequelize");
 router.get('/all/:id', function(req, res, next) {
     
   subcategory.findAll({
@@ -27,11 +29,11 @@ router.get('/all/:id', function(req, res, next) {
 router.get('/allprodbysubcat/:id', function(req, res, next) {
     
    product.findAll({
-        where:{categoryId:req.params.id,},
+        where:{[Op.not]:{shopId:null},categoryId:req.params.id,},
           order: [
               ['id', 'DESC']
           ],
-      include:[{model: category},{model: subcategory},{model: color},{model: materialtype},{model:images},{model:user},{model:shop}]
+      include:[{model: category},{model: subcategory},{model: materialtype},{model:images},{model:user},{model:shop}]
      
       }).then(arks => {
           res.json(

@@ -91,17 +91,17 @@ router.post('/register', function(req, res, next){
 
 // login api
 router.post('/userlogin', function(req, res, next) {
-  console.log(req.body);
+  console.log(req.body.email);
   var pass_word= req.body.password;
   
 
-  user.findOne({where:{email:req.body.email},include: [{model:shop},{model:role}],},).then(async login_data=>{
-     console.log(login_data);
+  user.findOne({where:{email:req.body.email}},).then(async login_data=>{
+    //  console.log(login_data);
 
      if(login_data !== null ){
-       console.log(login_data.dataValues.password);
+      //  console.log(login_data.dataValues.password);
       var hashedPassword = login_data.dataValues.password;
-      console.log(hashedPassword);
+      // console.log(hashedPassword);
       var password_match = passwordHash.verify(pass_word, hashedPassword);
       if(password_match == true){
        await user.update({
@@ -120,12 +120,15 @@ router.post('/userlogin', function(req, res, next) {
          })
             
       }else{
+        console.log('failure');
         res.json({
           message: 'failure'
         })
       }
      }
      else {
+      console.log('user not found');
+
         res.json({message: 'user not found'});
       }
 
@@ -134,8 +137,46 @@ router.post('/userlogin', function(req, res, next) {
 });
 
 
+
+// login with google api
+router.post('/userloginwithgoogle', function(req, res, next) {
+  console.log(req.body.email);
+  
+
+  user.findOne({where:{email:req.body.email}},).then(async login_data=>{
+    //  console.log(login_data);
+
+     if(login_data !== null ){
+     
+       await user.update({
+
+          mob_token: req.body.mob_token
+          
+      
+       }, {where: {email: req.body.email}});
+        var data=await user.findOne({where:{email:req.body.email},include: [{model:shop},{model:role}],},);
+        
+
+         res.json({
+              message: 'success',
+
+              user: data
+         })
+            
+   
+     }
+     else {
+      console.log('user not found');
+
+        res.json({message: 'user not found'});
+      }
+
+  });
+  
+});
+
 // /* New User Register by mobile. */
-router.post('/userregister', function(req, res, next){
+router.post('/userregisterwithgoogle', function(req, res, next){
   console.log(req.body);
   
   var password = passwordHash.generate(req.body.password);
@@ -144,24 +185,56 @@ router.post('/userregister', function(req, res, next){
  
   user.findOne({where:{email:req.body.email}},).then(check_data=> {
     if (check_data == null){
-      user.findOne({where:{phoneNo:req.body.phone}},).then(check_data1=> {
-    if (check_data1 == null){
-      user.findOne({where:{username:req.body.username}},).then(check_data2=> {
-        if (check_data2 == null){
+   
       user.create({
-        firstname:req.body.firstname,
-        lastname:req.body.lastname,
+      
         username:req.body.username,
-        password:password,
+     
         email: req.body.email,
-        roleId : 2,
-        phoneNo:req.body.phone,     
-        gender:req.body.gender,     
-        dateofbirth:req.body.birthday,     
+        roleId : 2,        
         image:req.body.image,     
         mob_token:req.body.mob_token,     
         status:1,     
       }).then(resp=>{
+  user.findOne({where:{id:resp.id},include: [{model:shop},{model:role}],},).then(userdata=>{
+
+    res.json({
+      message:'success',
+
+      user:userdata
+    })
+  })
+      });
+    }
+  
+   
+    else{
+      res.json({
+        message:'Email already Taken'
+      })
+
+    }
+  })
+  
+});
+
+
+// /* New User Register by mobile. */
+router.post('/userregister', function(req, res, next){
+  console.log(req.body);
+  
+  var pass_word = passwordHash.generate(req.body.password);
+  console.log(password);
+var data=req.body;
+data['password']=pass_word;
+ 
+  user.findOne({where:{email:req.body.email}},).then(check_data=> {
+    if (check_data == null){
+      user.findOne({where:{phoneNo:req.body.phone}},).then(check_data1=> {
+    if (check_data1 == null){
+      user.findOne({where:{username:req.body.username}},).then(check_data2=> {
+        if (check_data2 == null){
+      user.create(req.body).then(resp=>{
   user.findOne({where:{id:resp.id},include: [{model:shop},{model:role}],},).then(userdata=>{
 
     res.json({

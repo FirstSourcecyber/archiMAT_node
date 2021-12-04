@@ -21,6 +21,8 @@ var serviceRouter = require('./routes/serviceRouter');
 var fallowRouter = require('./routes/fallowRouter');
 var inboxRouter = require('./routes/inboxRouter');
 var materialrouter = require('./routes/material');
+var homerouter = require('./routes/home');
+var searchrouter = require('./routes/search');
 
 
 var app = express();
@@ -63,6 +65,8 @@ app.use('/service', serviceRouter);
 app.use('/fallow', fallowRouter);
 app.use('/inbox', inboxRouter);
 app.use('/storematerial', materialrouter);
+app.use('/home', homerouter);
+app.use('/search', searchrouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

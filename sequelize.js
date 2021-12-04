@@ -21,6 +21,8 @@ const sliderModel = require('./models/homeslider');
 const inboxModel = require('./models/inbox');
 const fallowModel = require('./models/fallow');
 const MaterialModel = require('./models/material');
+const LikeModel = require('./models/like');
+const CommentModel = require('./models/comment');
 
 const sequelize = new Sequelize('archimat', 'root', '', {
     host: 'localhost',
@@ -81,6 +83,9 @@ const slider = sliderModel(sequelize, Sequelize);
 const inbox = inboxModel(sequelize, Sequelize);
 const fallow = fallowModel(sequelize, Sequelize);
 const material = MaterialModel(sequelize, Sequelize);
+const like = LikeModel(sequelize, Sequelize);
+const comment = CommentModel(sequelize, Sequelize);
+
 
 
 
@@ -159,6 +164,39 @@ shop.hasMany(shoptime, {foreignKey: 'shopId', sourceKey: 'id'});
 
 shop.belongsTo(company);
 company.hasMany(shop, {foreignKey: 'companyId', sourceKey: 'id'});
+
+
+////like with product material and service
+like.belongsTo(product);
+product.hasMany(like, {foreignKey: 'productId', sourceKey: 'id'});
+
+like.belongsTo(user);
+user.hasMany(like, {foreignKey: 'userId', sourceKey: 'id'});
+
+like.belongsTo(material);
+material.hasMany(like, {foreignKey: 'materialId', sourceKey: 'id'});
+
+like.belongsTo(service);
+service.hasMany(like, {foreignKey: 'serviceId', sourceKey: 'id'});
+
+
+
+////comment with product material and service
+comment.belongsTo(product);
+product.hasMany(comment, {foreignKey: 'productId', sourceKey: 'id'});
+
+comment.belongsTo(user);
+user.hasMany(comment, {foreignKey: 'userId', sourceKey: 'id'});
+
+comment.belongsTo(material);
+material.hasMany(comment, {foreignKey: 'materialId', sourceKey: 'id'});
+
+comment.belongsTo(service);
+service.hasMany(comment, {foreignKey: 'serviceId', sourceKey: 'id'});
+
+
+
+/////////
 
 try {
     sequelize.authenticate();

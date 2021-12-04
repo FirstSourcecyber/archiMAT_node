@@ -63,8 +63,8 @@ router.post('/productfiles', function (req, res, next) {
 
 
 router.post('/image',   function(req, res, next) {
-  console.log(req.body);
-  console.log(req.body.image);
+  // console.log(req.body);
+  // console.log(req.body.image);
   var name = req.body.name;
   var img = req.body.image;
   // var id = req.body.id;
