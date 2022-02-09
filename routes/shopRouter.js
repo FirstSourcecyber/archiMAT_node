@@ -102,8 +102,8 @@ router.post('/shopdetail', function(req, res, next) {
         // limit: 5,
     }).then(async product=>{
       // var fallow2=await fallow.findAll({where:{shopId:req.body.shop}});
-      var shopservice=await service.findAll({where:{shopId:req.body.shop},order: [['id', 'DESC']]});
-      var shopmaterial=await material.findAll({where:{shopId:req.body.shop},order: [['id', 'DESC']]});
+      var shopservice=await service.findAll({where:{shopId:req.body.shop},include: [{model:shop}],order: [['id', 'DESC']]});
+      var shopmaterial=await material.findAll({where:{shopId:req.body.shop},include: [{model:shop}],order: [['id', 'DESC']]});
       var fallow1=await fallow.findOne({where:{shopId:req.body.shop,userId:req.body.user}});
       var data=await slider.findAll({
         where:{shopId:req.body.shop},
